@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وين أنت بالتدريب؟ — اكتشف مستواك الآن</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --plum:#4A1F4D;--plum-mid:#6B2D6F;--plum-light:#F2EAF3;
+  --gold:#C49A00;--gold-light:#FDF8DC;
+  --ink:#1A0E1C;--muted:#6B5570;--bone:#FAF7FB;--white:#FFFFFF;--border:#DDD0DF;
+  --red:#B83232;--red-light:#FDF0F0;
+  --yellow:#8B6800;--yellow-light:#FFFAEB;
+  --green:#2D6B3F;--green-light:#EDFAF2;
+  --star:#5C2D8B;--star-light:#F3EDFC;
+}
+body{font-family:'Tajawal',sans-serif;background:var(--bone);color:var(--ink);min-height:100vh;direction:rtl}
+
+/* HERO */
+.hero{background:var(--plum);padding:48px 20px 56px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold) 0%,#E8C040 50%,var(--gold) 100%)}
+.hero-tag{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#DFC8E8;font-size:12px;font-weight:600;padding:5px 16px;border-radius:20px;margin-bottom:20px;letter-spacing:.04em}
+.hero h1{font-size:clamp(26px,7vw,44px);font-weight:900;color:white;line-height:1.2;margin-bottom:12px}
+.hero h1 span{color:#F5D84A;display:block}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.65);max-width:420px;margin:0 auto 28px;line-height:1.75}
+.hero-meta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.6)}
+.meta-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+/* MAIN */
+.main{max-width:560px;margin:0 auto;padding:32px 20px 60px}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:28px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.progress-count{font-size:12px;color:var(--muted)}
+.progress-bar{height:5px;background:var(--border);border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;background:var(--plum-mid);border-radius:10px;transition:width .4s ease;width:0%}
+
+/* Q CARD */
+.q-card{background:white;border:1.5px solid var(--border);border-radius:16px;padding:28px 24px;margin-bottom:16px;display:none;animation:slideIn .35s ease}
+.q-card.active{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-number{display:inline-block;background:var(--plum-light);color:var(--plum-mid);font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;margin-bottom:14px;letter-spacing:.05em}
+.q-text{font-size:18px;font-weight:800;color:var(--ink);line-height:1.45;margin-bottom:22px}
+
+/* OPTIONS */
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{background:var(--bone);border:2px solid var(--border);border-radius:12px;padding:14px 18px;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;text-align:right;transition:border-color .15s,background .15s,transform .1s;display:flex;align-items:center;gap:12px;width:100%;font-family:'Tajawal',sans-serif}
+.opt:hover{border-color:var(--plum-mid);background:var(--plum-light);transform:translateX(-2px)}
+.opt.selected{border-color:var(--plum-mid);background:var(--plum-light);color:var(--plum);font-weight:700}
+.opt-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:border-color .15s,background .15s}
+.opt.selected .opt-dot{background:var(--plum-mid);border-color:var(--plum-mid)}
+
+/* NAV BTN */
+.nav-btn{width:100%;background:var(--plum);color:white;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:800;padding:16px;border-radius:12px;border:none;cursor:pointer;margin-top:8px;transition:background .15s,transform .1s;display:none}
+.nav-btn:hover{background:var(--plum-mid);transform:translateY(-1px)}
+.nav-btn.visible{display:block}
+
+/* RESULT */
+.result-card{background:white;border:2px solid var(--border);border-radius:20px;overflow:hidden;display:none;animation:slideIn .4s ease}
+.result-card.show{display:block}
+.result-header{padding:36px 24px 28px;text-align:center}
+.result-emoji{font-size:52px;margin-bottom:12px;display:block}
+.result-badge{display:inline-block;font-size:12px;font-weight:700;padding:4px 16px;border-radius:20px;margin-bottom:14px;letter-spacing:.05em}
+.result-title{font-size:22px;font-weight:900;line-height:1.3;margin-bottom:10px}
+.result-desc{font-size:15px;line-height:1.8;max-width:440px;margin:0 auto}
+.result-body{padding:0 24px 28px}
+.steps-title{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:14px;letter-spacing:.04em;text-align:center}
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.steps-list li{background:var(--bone);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;font-size:14.5px;font-weight:500;color:var(--ink);display:flex;align-items:flex-start;gap:10px;line-height:1.6}
+.step-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* PRODUCT CTA */
+.product-cta{background:var(--plum);border-radius:14px;padding:22px 20px;text-align:center;margin-bottom:12px}
+.product-cta-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:4px}
+.product-cta-name{font-size:15px;font-weight:800;color:white;line-height:1.4;margin-bottom:14px}
+.cta-btn{display:inline-block;background:#F5D84A;color:var(--plum);font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;padding:12px 28px;border-radius:10px;text-decoration:none;box-shadow:0 4px 0 #C49A00}
+
+/* SECONDARY CTA */
+.secondary-cta{background:var(--plum-light);border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;text-align:center;margin-bottom:0}
+.secondary-cta p{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500}
+.secondary-cta strong{display:block;font-size:14px;font-weight:700;color:var(--plum);margin-bottom:10px}
+.secondary-btn{display:inline-block;background:var(--plum);color:white;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:700;padding:9px 22px;border-radius:9px;text-decoration:none}
+
+/* SHARE */
+.share-section{text-align:center;margin-top:16px;padding:20px;background:var(--plum-light);border-radius:12px}
+.share-section p{font-size:14px;color:var(--muted);margin-bottom:12px;font-weight:600;line-height:1.7}
+.screenshot-hint{background:white;border:1.5px dashed var(--plum-mid);border-radius:10px;padding:14px;margin-bottom:12px;font-size:13.5px;color:var(--plum);font-weight:600}
+.restart-btn{display:block;width:100%;margin-top:10px;background:none;border:2px solid var(--border);border-radius:10px;padding:12px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;transition:border-color .15s,color .15s}
+.restart-btn:hover{border-color:var(--plum-mid);color:var(--plum)}
+
+/* RESULT TYPE COLORS */
+.type-red .result-header{background:var(--red-light)}
+.type-red .result-badge{background:#FFDDDD;color:var(--red)}
+.type-red .result-title{color:var(--red)}
+.type-red .result-desc{color:#5C1A1A}
+.type-yellow .result-header{background:var(--yellow-light)}
+.type-yellow .result-badge{background:#FFF3CC;color:var(--yellow)}
+.type-yellow .result-title{color:var(--yellow)}
+.type-yellow .result-desc{color:#5C3D00}
+.type-green .result-header{background:var(--green-light)}
+.type-green .result-badge{background:#D4F5E2;color:var(--green)}
+.type-green .result-title{color:var(--green)}
+.type-green .result-desc{color:#1A3D28}
+.type-star .result-header{background:var(--star-light)}
+.type-star .result-badge{background:#E8D9FC;color:var(--star)}
+.type-star .result-title{color:var(--star)}
+.type-star .result-desc{color:#3A1A5C}
+
+/* FOOTER */
+.footer{text-align:center;padding:20px;font-size:12px;color:var(--muted)}
+.footer a{color:var(--plum-mid);text-decoration:none;font-weight:700}
+
+@media(max-width:400px){
+  .hero{padding:36px 16px 44px}
+  .main{padding:24px 16px 48px}
+  .q-card{padding:22px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">اكتشف مستواك — مجاناً</div>
+  <h1>وين أنت <span>بالتدريب؟</span></h1>
+  <p class="hero-sub">6 أسئلة تحدد وضعك الحقيقي في تدريبك الصيفي — وتعطيك خارطة طريق مخصصة لك أنت</p>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-dot"></div>6 أسئلة فقط</div>
+    <div class="meta-item"><div class="meta-dot"></div>نتيجة فورية</div>
+    <div class="meta-item"><div class="meta-dot"></div>مجاناً تماماً</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-top">
+      <span class="progress-label">التقدم</span>
+      <span class="progress-count" id="progressCount">سؤال 1 من 6</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card active" id="q1">
+    <div class="q-number">السؤال الأول</div>
+    <div class="q-text">وين أنت الآن من فترة تدريبك؟</div>
+    <div class="options">
+      <button class="opt" data-q="1" data-val="1" onclick="selectOpt(this)"><div class="opt-dot"></div>ما زلت في أول أسبوع — كل شيء جديد</button>
+      <button class="opt" data-q="1" data-val="2" onclick="selectOpt(this)"><div class="opt-dot"></div>مضى عليّ أسبوعان أو ثلاثة</button>
+      <button class="opt" data-q="1" data-val="3" onclick="selectOpt(this)"><div class="opt-dot"></div>وصلت لمنتصف التدريب تقريباً</button>
+      <button class="opt" data-q="1" data-val="4" onclick="selectOpt(this)"><div class="opt-dot"></div>في آخر أسبوعين أو أقل</button>
+    </div>
+    <button class="nav-btn" id="next1" onclick="nextQ(1)">التالي ←</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card" id="q2">
+    <div class="q-number">السؤال الثاني</div>
+    <div class="q-text">ما أكثر موقف يرهبك داخل الصيدلية؟</div>
+    <div class="options">
+      <button class="opt" data-q="2" data-val="1" onclick="selectOpt(this)"><div class="opt-dot"></div>مريض يسألني ومو عارف كيف أجاوبه</button>
+      <button class="opt" data-q="2" data-val="2" onclick="selectOpt(this)"><div class="opt-dot"></div>روشتة ما أقدر أقرأ خط الطبيب</button>
+      <button class="opt" data-q="2" data-val="1" onclick="selectOpt(this)"><div class="opt-dot"></div>حالة OTC — ما أعرف أعطي أم أحول للطبيب</button>
+      <button class="opt" data-q="2" data-val="3" onclick="selectOpt(this)"><div class="opt-dot"></div>الزحمة والضغط — كل شيء يجي مرة وحدة</button>
+    </div>
+    <button class="nav-btn" id="next2" onclick="nextQ(2)">التالي ←</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card" id="q3">
+    <div class="q-number">السؤال الثالث</div>
+    <div class="q-text">كيف تقضي معظم وقتك داخل الصيدلية حالياً؟</div>
+    <div class="options">
+      <button class="opt" data-q="3" data-val="1" onclick="selectOpt(this)"><div class="opt-dot"></div>واقف أشاهد فقط — ما أتدخل</button>
+      <button class="opt" data-q="3" data-val="2" onclick="selectOpt(this)"><div class="opt-dot"></div>أساعد بالترتيب والتجهيز — مو بالمرضى</button>
+      <button class="opt" data-q="3" data-val="3" onclick="selectOpt(this)"><div class="opt-dot"></div>بدأت أتفاعل مع المرضى أحياناً بحذر</button>
+      <button class="opt" data-q="3" data-val="4" onclick="selectOpt(this)"><div class="opt-dot"></div>أتعامل وأصرف بشكل شبه مستقل</button>
+    </div>
+    <button class="nav-btn" id="next3" onclick="nextQ(3)">التالي ←</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card" id="q4">
+    <div class="q-number">السؤال الرابع</div>
+    <div class="q-text">عندما تتحدث مع مريض — كيف تحس بنفسك؟</div>
+    <div class="options">
+      <button class="opt" data-q="4" data-val="1" onclick="selectOpt(this)"><div class="opt-dot"></div>أتجنب التحدث معه قدر الإمكان</button>
+      <button class="opt" data-q="4" data-val="2" onclick="selectOpt(this)"><div class="opt-dot"></div>أتكلم لكن أحس كلامي غير منظم ومتقطع</button>
+      <button class="opt" data-q="4" data-val="3" onclick="selectOpt(this)"><div class="opt-dot"></div>أتكلم بشكل معقول لكن أفتقد الأسئلة الصحيحة</button>
+      <button class="opt" data-q="4" data-val="4" onclick="selectOpt(this)"><div class="opt-dot"></div>أتواصل بثقة وأسأل بذكاء</button>
+    </div>
+    <button class="nav-btn" id="next4" onclick="nextQ(4)">التالي ←</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card" id="q5">
+    <div class="q-number">السؤال الخامس</div>
+    <div class="q-text">ما أكثر شيء تحس إنك تفتقده الآن؟</div>
+    <div class="options">
+      <button class="opt" data-q="5" data-val="1" onclick="selectOpt(this)"><div class="opt-dot"></div>خطة عملية — من أين أبدأ وماذا أفعل كل يوم</button>
+      <button class="opt" data-q="5" data-val="2" onclick="selectOpt(this)"><div class="opt-dot"></div>ثقة بنفسي أمام المريض</button>
+      <button class="opt" data-q="5" data-val="3" onclick="selectOpt(this)"><div class="opt-dot"></div>معرفة متى أعالج ومتى أحول للطبيب بسرعة</button>
+      <button class="opt" data-q="5" data-val="4" onclick="selectOpt(this)"><div class="opt-dot"></div>أسئلة ذكية أسألها للمريض لأفهم وضعه</button>
+    </div>
+    <button class="nav-btn" id="next5" onclick="nextQ(5)">التالي ←</button>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card" id="q6">
+    <div class="q-number">السؤال السادس والأخير</div>
+    <div class="q-text">ما هدفك الحقيقي من هذا التدريب؟</div>
+    <div class="options">
+      <button class="opt" data-q="6" data-val="1" onclick="selectOpt(this)"><div class="opt-dot"></div>أكمله بسلام وبدون ما أقع بأخطاء</button>
+      <button class="opt" data-q="6" data-val="2" onclick="selectOpt(this)"><div class="opt-dot"></div>أتعلم فعلاً وأخرج بمهارة حقيقية</button>
+      <button class="opt" data-q="6" data-val="3" onclick="selectOpt(this)"><div class="opt-dot"></div>أبهر صاحب الصيدلية — ربما يوظفني</button>
+      <button class="opt" data-q="6" data-val="4" onclick="selectOpt(this)"><div class="opt-dot"></div>أبني ثقتي قبل التخرج وأول عمل</button>
+    </div>
+    <button class="nav-btn" id="next6" onclick="showResult()">اكتشف نتيجتك 🎯</button>
+  </div>
+
+  <!-- ══ RESULT 1: الضائع ══ -->
+  <div class="result-card type-red" id="result-lost">
+    <div class="result-header">
+      <span class="result-emoji">🔴</span>
+      <div class="result-badge">المتدرب الضائع</div>
+      <div class="result-title">كل شيء جديد عليك — والوقت يمشي</div>
+      <div class="result-desc">هذا طبيعي تماماً — لكن الخطر الحقيقي إنك تكتفي بالمشاهدة وتنتظر أحد يأخذ بيدك. في أغلب الصيدليات لن يحدث هذا. لازم تبدأ أنت.</div>
+    </div>
+    <div class="result-body">
+      <div class="steps-title">خطواتك الثلاث الآن ↓</div>
+      <ul class="steps-list">
+        <li><span class="step-icon">🗺️</span>اليوم الأول: تعرف على ترتيب الأدوية في الصيدلية وكيف تُصنَّف — هذا يكسر حاجز "ما أعرف أدور"</li>
+        <li><span class="step-icon">🗣️</span>من الغد: راقب الصيدلاني وهو يستقبل مريض — دوّن كيف يسأل وكيف يشرح الدواء</li>
+        <li><span class="step-icon">📋</span>نهاية الأسبوع: احفظ قاعدة WWHAM — ستغير طريقة تعاملك مع كل حالة OTC إلى الأبد</li>
+      </ul>
+      <div class="product-cta">
+        <div class="product-cta-label">الأداة التي تحتاجها الآن 👇</div>
+        <div class="product-cta-name">دليل استغلال فترة التدريب — خطة تحرك كاملة من أول يوم</div>
+        <a href="https://pp118zainabsalih-spec.github.io/training/" class="cta-btn" target="_blank">اعرف التفاصيل</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RESULT 2: المراقب ══ -->
+  <div class="result-card type-yellow" id="result-watcher">
+    <div class="result-header">
+      <span class="result-emoji">🟡</span>
+      <div class="result-badge">المتدرب المراقب</div>
+      <div class="result-title">تشاهد وتتعلم — لكن الوقت يمشي</div>
+      <div class="result-desc">أنت في مرحلة المراقب الذكي — لكن الفجوة بين المراقب والمتفاعل تُقطع بخطوة واحدة جريئة تتخذها اليوم. لا تترك التدريب ينتهي وأنت لم تتكلم مع مريض واحد باستقلالية.</div>
+    </div>
+    <div class="result-body">
+      <div class="steps-title">خطواتك الثلاث للأسبوع القادم ↓</div>
+      <ul class="steps-list">
+        <li><span class="step-icon">🤝</span>اطلب من الصيدلاني إنك تسأل المريض سؤالاً واحداً فقط — قبل ما يبدأ هو</li>
+        <li><span class="step-icon">📝</span>في كل حالة OTC تشوفها: سجّل — هل كانت OTC أم إحالة؟ ولماذا؟</li>
+        <li><span class="step-icon">🎯</span>حدد لنفسك هدفاً أسبوعياً واحداً: مثلاً "هذا الأسبوع أتقن حالات البرد والحمى بالكامل"</li>
+      </ul>
+      <div class="product-cta">
+        <div class="product-cta-label">الأداة التي تحتاجها الآن 👇</div>
+        <div class="product-cta-name">دليل استغلال فترة التدريب — برنامج ذاتي لـ 4 أسابيع كاملة</div>
+        <a href="https://pp118zainabsalih-spec.github.io/training/" class="cta-btn" target="_blank">اعرف التفاصيل</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RESULT 3: النشط ══ -->
+  <div class="result-card type-green" id="result-active">
+    <div class="result-header">
+      <span class="result-emoji">🟢</span>
+      <div class="result-badge">المتدرب النشط</div>
+      <div class="result-title">بدأت تتفاعل — الآن وقت ترتقي</div>
+      <div class="result-desc">أنت في المسار الصح وتتعامل مع المرضى — لكن مرحلتك الآن هي صقل جودة التواصل. الفرق بين صيدلاني معقول وصيدلاني يُبهر المريض = طريقة الحديث والأسئلة التي يطرحها.</div>
+    </div>
+    <div class="result-body">
+      <div class="steps-title">خطواتك الثلاث للمرحلة القادمة ↓</div>
+      <ul class="steps-list">
+        <li><span class="step-icon">🗣️</span>تدرّب على نموذج WWHAM بشكل احترافي — اسأل بترتيب وبثقة بدون ما يحس المريض باستجواب</li>
+        <li><span class="step-icon">🚩</span>تعلم Red Flags لأشيع 5 حالات تواجهها يومياً — اتخذ قرار الإحالة بثقة لا بتردد</li>
+        <li><span class="step-icon">💬</span>اطلب من صيدلاني خبير يراقبك وأنت تتحدث مع مريض — واطلب رأيه بصراحة في أسلوب تواصلك</li>
+      </ul>
+      <div class="product-cta">
+        <div class="product-cta-label">الأداة الأساسية لمرحلتك 👇</div>
+        <div class="product-cta-name">تواصَل لتَبيع — دليل التواصل الصيدلاني الاحترافي من أول كلمة</div>
+        <a href="https://pp118zainabsalih-spec.github.io/twasel/" class="cta-btn" target="_blank">اعرف التفاصيل</a>
+      </div>
+      <br>
+      <div class="secondary-cta">
+        <p>وللقرارات السريعة داخل الشفت 👇</p>
+        <strong>بطاقات الجيب OTC — 33 حالة بخوارزمية قرار ملونة</strong>
+        <a href="https://pp118zainabsalih-spec.github.io/ta/" class="secondary-btn" target="_blank">اعرف التفاصيل</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RESULT 4: المتميز ══ -->
+  <div class="result-card type-star" id="result-star">
+    <div class="result-header">
+      <span class="result-emoji">⭐</span>
+      <div class="result-badge">المتدرب المتميز</div>
+      <div class="result-title">أنت في المستوى المتقدم — ماذا بعد التدريب؟</div>
+      <div class="result-desc">أنت تتعامل باستقلالية وثقة. سؤالك الحقيقي الآن مو "كيف أكمل التدريب" — بل "كيف أحوّل ما تعلمته إلى قيمة مهنية وفرصة حقيقية بعد التدريب؟"</div>
+    </div>
+    <div class="result-body">
+      <div class="steps-title">كيف تختم تدريبك وتبني ما بعده ↓</div>
+      <ul class="steps-list">
+        <li><span class="step-icon">📊</span>اطلب مسؤولية رف أو قسم كامل — وراقب حركته ومرتجعاته طوال الأسبوع</li>
+        <li><span class="step-icon">🎓</span>قدّم جلسة تثقيف قصيرة لمريض مزمن — هذا ما يميزك ويجعل صاحب الصيدلية يتذكرك</li>
+        <li><span class="step-icon">🤖</span>ابدأ تفكر في كيف توظف مهارتك الصيدلانية لتبني دخلاً إضافياً — والـ AI يمكنه مساعدتك في ذلك</li>
+      </ul>
+      <div class="product-cta">
+        <div class="product-cta-label">خطوتك التالية بعد التدريب 👇</div>
+        <div class="product-cta-name">الصيدلاني + AI = مستشار شخصي لا يتعب — دليل تطبيقي لزيادة دخلك</div>
+        <a href="https://pp118zainabsalih-spec.github.io/ai/" class="cta-btn" target="_blank">اعرف التفاصيل</a>
+      </div>
+      <br>
+      <div class="secondary-cta">
+        <p>وللقرارات السريعة داخل الشفت 👇</p>
+        <strong>بطاقات الجيب OTC — 33 حالة بخوارزمية قرار ملونة</strong>
+        <a href="https://pp118zainabsalih-spec.github.io/ta/" class="secondary-btn" target="_blank">اعرف التفاصيل</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARE -->
+  <div class="share-section" id="shareSection" style="display:none">
+    <div class="screenshot-hint">
+      📸 خذ سكرين شوت لنتيجتك الآن وشاركها في الستوري — وتحدّ زملاءك يجربون الاختبار!
+    </div>
+    <button class="restart-btn" onclick="restart()">↩ أعد الاختبار من البداية</button>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>بقلم <a href="https://instagram.com/ph.zainab_m" target="_blank">@ph.zainab_m</a> — الصيدلانية الأكاديمية د. زينب مصطفى</p>
+</div>
+
+<script>
+const answers={};
+
+function selectOpt(btn){
+  const q=btn.dataset.q;
+  btn.closest('.options').querySelectorAll('.opt').forEach(s=>s.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[q]=parseInt(btn.dataset.val);
+  const nb=document.getElementById('next'+q);
+  if(nb) nb.classList.add('visible');
+}
+
+function nextQ(n){
+  document.getElementById('q'+n).classList.remove('active');
+  const nxt=document.getElementById('q'+(n+1));
+  if(nxt){nxt.classList.add('active');updateProgress(n+1);}
+}
+
+function updateProgress(cur){
+  document.getElementById('progressFill').style.width=Math.round(cur/6*100)+'%';
+  document.getElementById('progressCount').textContent='سؤال '+cur+' من 6';
+}
+
+function showResult(){
+  for(let i=1;i<=6;i++){
+    const c=document.getElementById('q'+i);
+    if(c) c.style.display='none';
+  }
+  document.getElementById('progressWrap').style.display='none';
+
+  const q1=answers[1]||1;
+  const q3=answers[3]||1;
+  const q4=answers[4]||1;
+  const q5=answers[5]||1;
+
+  let score=0;
+  score+=q1;
+  score+=q3;
+  score+=q4;
+  score+=(q5===2||q5===4)?2:1;
+
+  let id;
+  if(score<=5)       id='result-lost';
+  else if(score<=9)  id='result-watcher';
+  else if(score<=13) id='result-active';
+  else               id='result-star';
+
+  document.getElementById(id).classList.add('show');
+  document.getElementById('shareSection').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restart(){
+  for(const k in answers) delete answers[k];
+  ['result-lost','result-watcher','result-active','result-star'].forEach(id=>{
+    document.getElementById(id).classList.remove('show');
+  });
+  document.getElementById('progressWrap').style.display='block';
+  for(let i=1;i<=6;i++){
+    const c=document.getElementById('q'+i);
+    if(c){
+      c.style.display='';
+      c.classList.remove('active');
+      c.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+      const nb=c.querySelector('.nav-btn');
+      if(nb) nb.classList.remove('visible');
+    }
+  }
+  document.getElementById('q1').classList.add('active');
+  document.getElementById('shareSection').style.display='none';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressCount').textContent='سؤال 1 من 6';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+updateProgress(1);
+</script>
+</body>
+</html>
